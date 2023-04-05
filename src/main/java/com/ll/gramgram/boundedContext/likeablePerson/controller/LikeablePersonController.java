@@ -66,6 +66,6 @@ public class LikeablePersonController {
 
         RsData<LikeablePerson> deleteRsData = likeablePersonService.delete(id);
 
-        return "usr/likeablePerson/list";
+        return rq.redirectWithMsg("/likeablePerson/list", deleteRsData);
     }
 }
