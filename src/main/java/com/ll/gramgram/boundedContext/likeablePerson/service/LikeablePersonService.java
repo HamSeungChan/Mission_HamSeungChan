@@ -55,7 +55,7 @@ public class LikeablePersonService {
         Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
 
         if(!likeablePerson.isPresent()){
-            return RsData.of("F-3", "소유권이 없습니다.");
+            return RsData.of("F-3", "존재하지 않은 호감관계입니다.");
         }
 
         likeablePersonRepository.delete(likeablePerson.get());
