@@ -51,7 +51,7 @@ public class LikeablePersonService {
     }
 
     @Transactional
-    public RsData<LikeablePerson> delete(Integer id){
+    public RsData<LikeablePerson> delete(Long id){
         Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
 
         if(likeablePerson.isEmpty()){
