@@ -54,7 +54,7 @@ public class LikeablePersonService {
     public RsData<LikeablePerson> delete(Integer id){
         Optional<LikeablePerson> likeablePerson = likeablePersonRepository.findById(id);
 
-        if(!likeablePerson.isPresent()){
+        if(likeablePerson.isEmpty()){
             return RsData.of("F-3", "존재하지 않은 호감관계입니다.");
         }
 
