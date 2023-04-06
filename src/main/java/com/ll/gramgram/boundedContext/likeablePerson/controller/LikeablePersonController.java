@@ -67,9 +67,10 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id){
+    public String delete(@PathVariable("id") Long id) {
 
-        RsData<LikeablePerson> deleteRsData = likeablePersonService.delete(id);
+        RsData deleteRsData = likeablePersonService.delete(id, rq.getMember());
+        if (deleteRsData.isFail()) return rq.historyBack(deleteRsData);
 
         return rq.redirectWithMsg("/likeablePerson/list", deleteRsData);
     }
