@@ -11,7 +11,8 @@
    - [x]  로그인한 사용자의 호감리스트를 찾아 크기를 확인
    - [x]  크기가 11 이상이면 RsData에 F메세지를 담아 return
 3. 케이스 4 가 발생했을 때 기존의 사유와 다른 사유로 호감을 표시하는 경우에는 성공으로 처리
-
+   - [ ]  위에 케이스에서 기존 호감 리스트에 존재한다면 `LikeablePerson` 의 속성 `attractiveTypeCode` 의 값을 구한다. 새로운 호감 등록에 선택 된 `attractiveTypeCode` 의 값을 비교한다.
+   - [ ]  두 값이 다르다면 기존의 `attractiveTypeCode` 를 새로운 호감 등록에 선택된`attractiveTypeCode`로 변경해 준다.
 ---
 
 ### N주차 미션 요약
