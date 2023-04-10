@@ -34,29 +34,15 @@ public class LikeablePersonService {
 
         for (LikeablePerson likeablePerson : likeablePeople) {
             if (likeablePerson.getToInstaMember().equals(toInstaMember)) {
-                if(likeablePerson.getAttractiveTypeCode() != attractiveTypeCode){
+                if (likeablePerson.getAttractiveTypeCode() != attractiveTypeCode) {
+
                     fromInstaMember.getFromLikeablePeople().remove(likeablePerson);
                     toInstaMember.getToLikeablePeople().remove(likeablePerson);
                     likeablePersonRepository.delete(likeablePerson);
 
-                    LikeablePerson tmplikeablePerson = LikeablePerson
-                            .builder()
-                            .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
-                            .fromInstaMemberUsername(member.getInstaMember().getUsername()) // 중요하지 않음
-                            .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
-                            .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
-                            .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
-                            .build();
+                    createLikeablePerson(fromInstaMember, toInstaMember, attractiveTypeCode);
 
-                    likeablePersonRepository.save(tmplikeablePerson); // 저장
-
-                    // 너가 좋아하는 호감표시 생겼어.
-                    fromInstaMember.addFromLikeablePerson(tmplikeablePerson);
-
-                    // 너를 좋아하는 호감표시 생겼어.
-                    toInstaMember.addToLikeablePerson(tmplikeablePerson);
-
-                    return RsData.of("S-2", " 호감사유를 변경.");
+                    return RsData.of("S-2", "입력하신 인스타유저(%s)의 호감 사유가 변경되었습니다.".formatted(username), likeablePerson);
                 }
                 return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
             }
@@ -70,11 +56,15 @@ public class LikeablePersonService {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
 
+        LikeablePerson likeablePerson = createLikeablePerson(fromInstaMember, toInstaMember, attractiveTypeCode);
+        return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
+    }
 
+    private LikeablePerson createLikeablePerson(InstaMember fromInstaMember, InstaMember toInstaMember, int attractiveTypeCode) {
         LikeablePerson likeablePerson = LikeablePerson
                 .builder()
                 .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
-                .fromInstaMemberUsername(member.getInstaMember().getUsername()) // 중요하지 않음
+                .fromInstaMemberUsername(fromInstaMember.getUsername()) // 중요하지 않음
                 .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
                 .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
@@ -88,7 +78,7 @@ public class LikeablePersonService {
         // 너를 좋아하는 호감표시 생겼어.
         toInstaMember.addToLikeablePerson(likeablePerson);
 
-        return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
+        return likeablePerson;
     }
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
