@@ -11,8 +11,8 @@
    - [x]  로그인한 사용자의 호감리스트를 찾아 크기를 확인
    - [x]  크기가 11 이상이면 RsData에 F메세지를 담아 return
 3. 케이스 4 가 발생했을 때 기존의 사유와 다른 사유로 호감을 표시하는 경우에는 성공으로 처리
-   - [ ]  위에 케이스에서 기존 호감 리스트에 존재한다면 `LikeablePerson` 의 속성 `attractiveTypeCode` 의 값을 구한다. 새로운 호감 등록에 선택 된 `attractiveTypeCode` 의 값을 비교한다.
-   - [ ]  두 값이 다르다면 기존의 `attractiveTypeCode` 를 새로운 호감 등록에 선택된`attractiveTypeCode`로 변경해 준다.
+   - [x]  위에 케이스에서 기존 호감 리스트에 존재한다면 `LikeablePerson` 의 속성 `attractiveTypeCode` 의 값을 구한다. 새로운 호감 등록에 선택 된 `attractiveTypeCode` 의 값을 비교한다.
+   - [x]  두 값이 다르다면 기존의 `attractiveTypeCode` 를 새로운 호감 등록에 선택된`attractiveTypeCode`로 변경해 준다.
 ---
 
 ### N주차 미션 요약
@@ -28,6 +28,10 @@
 2. 한명의 인스타회원이 11명 이상의 호감상대를 등록 불가능
    - 위에서 구한 `fromLikeablePeople` 리스트를 이용한다.
    - 크기가 10인 상태에서 (`if (likeablePeople.size() == 10)` )새로운 호감등록이 들어오는 것을 제한한다.
+
+3. 케이스 4 가 발생했을 때 기존의 사유와 다른 사유로 호감을 표시하는 경우에는 성공으로 처리
+   - 기존의 `attractiveTypeCode` 값과 새로 등록된  `attractiveTypeCode` 값을 비교한다.
+   - 두 값이 다르면 기존에 저장되었던 `likeablePeson`  객체 제거 후 바뀐 `attractiveTypeCode` 값으로 새로운`likeablePeson` 객체를 생성
 
 **[특이사항]**
 
