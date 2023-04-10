@@ -34,6 +34,30 @@ public class LikeablePersonService {
 
         for (LikeablePerson likeablePerson : likeablePeople) {
             if (likeablePerson.getToInstaMember().equals(toInstaMember)) {
+                if(likeablePerson.getAttractiveTypeCode() != attractiveTypeCode){
+                    fromInstaMember.getFromLikeablePeople().remove(likeablePerson);
+                    toInstaMember.getToLikeablePeople().remove(likeablePerson);
+                    likeablePersonRepository.delete(likeablePerson);
+
+                    LikeablePerson tmplikeablePerson = LikeablePerson
+                            .builder()
+                            .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
+                            .fromInstaMemberUsername(member.getInstaMember().getUsername()) // 중요하지 않음
+                            .toInstaMember(toInstaMember) // 호감을 받는 사람의 인스타 멤버
+                            .toInstaMemberUsername(toInstaMember.getUsername()) // 중요하지 않음
+                            .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
+                            .build();
+
+                    likeablePersonRepository.save(tmplikeablePerson); // 저장
+
+                    // 너가 좋아하는 호감표시 생겼어.
+                    fromInstaMember.addFromLikeablePerson(tmplikeablePerson);
+
+                    // 너를 좋아하는 호감표시 생겼어.
+                    toInstaMember.addToLikeablePerson(tmplikeablePerson);
+
+                    return RsData.of("S-2", " 호감사유를 변경.");
+                }
                 return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
             }
         }
