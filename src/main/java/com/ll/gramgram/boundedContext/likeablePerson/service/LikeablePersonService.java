@@ -27,8 +27,10 @@ public class LikeablePersonService {
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
         List<LikeablePerson> likeablePeople = fromInstaMember.getFromLikeablePeople();
-        if(likeablePeople.contains(toInstaMember)){
-            return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
+        for (LikeablePerson likeablePerson : likeablePeople) {
+            if (likeablePerson.getToInstaMember().equals(toInstaMember)) {
+                return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
+            }
         }
 
         if (member.hasConnectedInstaMember() == false) {
