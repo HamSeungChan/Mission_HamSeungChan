@@ -33,18 +33,13 @@ public class LikeablePersonService {
         }
 
         for (LikeablePerson likeablePerson : likeablePeople) {
-            if (likeablePerson.getToInstaMember().equals(toInstaMember)) {
-                if (likeablePerson.getAttractiveTypeCode() != attractiveTypeCode) {
-
-                    fromInstaMember.getFromLikeablePeople().remove(likeablePerson);
-                    toInstaMember.getToLikeablePeople().remove(likeablePerson);
-                    likeablePersonRepository.delete(likeablePerson);
-
-                    createLikeablePerson(fromInstaMember, toInstaMember, attractiveTypeCode);
-
-                    return RsData.of("S-2", "입력하신 인스타유저(%s)의 호감 사유가 변경되었습니다.".formatted(username), likeablePerson);
+            if (isSameToInstaMember(likeablePerson, toInstaMember)) {
+                if (isSameAttractiveTypeCode(likeablePerson, attractiveTypeCode)) {
+                    return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
                 }
-                return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
+                deleteLikeablePerson(fromInstaMember, toInstaMember, likeablePerson);
+                createLikeablePerson(fromInstaMember, toInstaMember, attractiveTypeCode);
+                return RsData.of("S-2", "입력하신 인스타유저(%s)의 호감 사유가 변경되었습니다.".formatted(username), likeablePerson);
             }
         }
 
@@ -79,6 +74,20 @@ public class LikeablePersonService {
         toInstaMember.addToLikeablePerson(likeablePerson);
 
         return likeablePerson;
+    }
+
+    private boolean isSameAttractiveTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
+        return likeablePerson.getAttractiveTypeCode() == attractiveTypeCode;
+    }
+
+    private boolean isSameToInstaMember(LikeablePerson likeablePerson, InstaMember toInstaMember) {
+        return likeablePerson.getToInstaMember().equals(toInstaMember);
+    }
+
+    private void deleteLikeablePerson(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson) {
+        fromInstaMember.getFromLikeablePeople().remove(likeablePerson);
+        toInstaMember.getToLikeablePeople().remove(likeablePerson);
+        delete(likeablePerson);
     }
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
