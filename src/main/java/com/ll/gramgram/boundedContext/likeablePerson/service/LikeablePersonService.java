@@ -37,8 +37,7 @@ public class LikeablePersonService {
                 if (isSameAttractiveTypeCode(likeablePerson, attractiveTypeCode)) {
                     return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
                 }
-                deleteLikeablePerson(fromInstaMember, toInstaMember, likeablePerson);
-                createLikeablePerson(fromInstaMember, toInstaMember, attractiveTypeCode);
+                changeAttractiveTypeCode(fromInstaMember, toInstaMember, likeablePerson,attractiveTypeCode);
                 return RsData.of("S-2", "입력하신 인스타유저(%s)의 호감 사유가 변경되었습니다.".formatted(username), likeablePerson);
             }
         }
@@ -82,6 +81,11 @@ public class LikeablePersonService {
 
     private boolean isSameToInstaMember(LikeablePerson likeablePerson, InstaMember toInstaMember) {
         return likeablePerson.getToInstaMember().equals(toInstaMember);
+    }
+
+    private void changeAttractiveTypeCode(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson, int attractiveTypeCode) {
+        deleteLikeablePerson(fromInstaMember,toInstaMember,likeablePerson);
+        create(fromInstaMember,toInstaMember,attractiveTypeCode);
     }
 
     private void deleteLikeablePerson(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson) {
