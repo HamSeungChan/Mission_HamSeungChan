@@ -87,11 +87,11 @@ public class LikeablePersonService {
     }
 
     private void changeAttractiveTypeCode(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson, int attractiveTypeCode) {
-        deleteLikeablePerson(fromInstaMember,toInstaMember,likeablePerson);
+        deleteForChange(fromInstaMember,toInstaMember,likeablePerson);
         create(fromInstaMember,toInstaMember,attractiveTypeCode);
     }
 
-    private void deleteLikeablePerson(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson) {
+    private void deleteForChange(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson) {
         fromInstaMember.getFromLikeablePeople().remove(likeablePerson);
         toInstaMember.getToLikeablePeople().remove(likeablePerson);
         delete(likeablePerson);
