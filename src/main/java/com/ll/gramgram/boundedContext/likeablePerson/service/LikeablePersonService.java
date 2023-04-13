@@ -35,8 +35,9 @@ public class LikeablePersonService {
             return RsData.of("F-4", "호감등록은 10명까지 가능합니다.");
         }
 
-        if (checkDuplicate(member, username).isPresent()) {
-
+        Optional<LikeablePerson> duplicateLikeablePerson = checkDuplicate(member, username);
+        if (duplicateLikeablePerson.isPresent()) {
+            return checkAttractiveTypeCode(duplicateLikeablePerson.get(), attractiveTypeCode);
         }
 
         if (member.hasConnectedInstaMember() == false) {
@@ -72,16 +73,6 @@ public class LikeablePersonService {
         return likeablePerson;
     }
 
-    private boolean isSameAttractiveTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
-        return likeablePerson.getAttractiveTypeCode() == attractiveTypeCode;
-    }
-
-
-    private void changeAttractiveTypeCode(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson, int attractiveTypeCode) {
-        deleteForChange(fromInstaMember, toInstaMember, likeablePerson);
-        create(fromInstaMember, toInstaMember, attractiveTypeCode);
-    }
-
     private void deleteForChange(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson) {
         fromInstaMember.getFromLikeablePeople().remove(likeablePerson);
         toInstaMember.getToLikeablePeople().remove(likeablePerson);
@@ -90,13 +81,19 @@ public class LikeablePersonService {
 
     private Optional<LikeablePerson> checkDuplicate(Member member, String username) {
         return member.getInstaMember().getFromLikeablePeople()
-        .stream()
-        .filter(likeablePerson -> likeablePerson.getToInstaMember().getUsername().equals(username))
-        .findFirst();
+                .stream()
+                .filter(likeablePerson -> likeablePerson.getToInstaMember().getUsername().equals(username))
+                .findFirst();
     }
 
-    public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
-        return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
+    private RsData checkAttractiveTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
+        if(isSameAttractiveTypeCode(likeablePerson.getAttractiveTypeCode(),attractiveTypeCode)){
+            return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
+        }
+    }
+
+    private boolean isSameAttractiveTypeCode(int oldAttractiveTypeCode, int newAttractiveTypeCode) {
+        return oldAttractiveTypeCode == newAttractiveTypeCode;
     }
 
     public Optional<LikeablePerson> findById(Long id) {
