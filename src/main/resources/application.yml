@@ -15,12 +15,16 @@ spring:
     oauth2:
       client:
         registration:
+          google:
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+            client-name: Google
+            scope: profile
           kakao:
             clientId:
             scope:
             client-name: Kakao
             authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             client-authentication-method: POST
         provider:
           kakao:
