@@ -36,5 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### Custion ###
+### Custom ###
 application-secret.yml
