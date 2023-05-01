@@ -20,8 +20,7 @@ import java.util.Optional;
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
-    @Value("${constant.max.likeable}")
-    private String likeableMax;
+
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
@@ -31,7 +30,7 @@ public class LikeablePersonService {
 
         List<LikeablePerson> likeablePeople = fromInstaMember.getFromLikeablePeople();
 
-        if (likeablePeople.size() == Integer.parseInt(likeableMax)) {
+        if (likeablePeople.size() == 10) {
             return RsData.of("F-4", "호감등록은 10명까지 가능합니다.");
         }
 
@@ -103,6 +102,8 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData delete(LikeablePerson likeablePerson) {
+        likeablePerson.getFromInstaMember().removeFromLikeablePerson(likeablePerson);
+        likeablePerson.getToInstaMember().removeToLikeablePerson(likeablePerson);
         likeablePersonRepository.delete(likeablePerson);
 
         String likeCanceledUsername = likeablePerson.getToInstaMember().getUsername();
