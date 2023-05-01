@@ -46,6 +46,7 @@ logging:
     com.ll.gramgram_ai: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
-constant:
-  max :
-    likeable : "10"
+custom:
+  likeablePerson :
+    from:
+      max : "10"
