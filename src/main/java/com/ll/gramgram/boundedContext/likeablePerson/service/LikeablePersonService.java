@@ -90,6 +90,7 @@ public class LikeablePersonService {
         if(isSameAttractiveTypeCode(likeablePerson.getAttractiveTypeCode(),attractiveTypeCode)){
             return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
         }
+        return RsData.of("F-3", "이미 등록된 호감상대입니다. 중복해서 호감상대로 등록할 수 없습니다");
     }
 
     private boolean isSameAttractiveTypeCode(int oldAttractiveTypeCode, int newAttractiveTypeCode) {
