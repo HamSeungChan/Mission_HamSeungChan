@@ -29,7 +29,7 @@ public class NotProd {
             //ddl-auto: create 이기 때문에 조금만 수정하여도 카카오 로그인한 정보가 사라짐을 방지
             Member memberUser5ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__2735880781").getData();
             Member memberUser6ByGoogle = memberService.whenSocialLogin("GOOGLE", "GOOGLE__117979796166034494966").getData();
-
+            Member memberUser7ByNaver = memberService.whenSocialLogin("NAVER", "NAVER__{id=k7qQqVncDGwc-SKhHO75XLh5oqun4J-45pacdaUzdig}").getData();
             instaMemberService.connect(memberUser2, "insta_user2", "M");
             instaMemberService.connect(memberUser3, "insta_user3", "W");
             instaMemberService.connect(memberUser4, "insta_user4", "M");
