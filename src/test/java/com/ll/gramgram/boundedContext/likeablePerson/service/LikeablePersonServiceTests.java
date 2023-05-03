@@ -1,4 +1,5 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
+
 import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
@@ -9,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
@@ -20,6 +24,7 @@ public class LikeablePersonServiceTests {
 
     @Autowired
     private LikeablePersonRepository likeablePersonRepository;
+
     @Test
     @DisplayName("테스트 1")
     void t001() throws Exception {
@@ -127,7 +132,7 @@ public class LikeablePersonServiceTests {
 
     @Test
     @DisplayName("yml에 있는 최대가능호감표시 수 가져오기")
-    void t003() throws  Exception{
+    void t003() throws Exception {
         long likeablePersonFromMax = AppConfig.getLikeablePersonFromMax();
         assertThat(likeablePersonFromMax).isEqualTo(10);
     }

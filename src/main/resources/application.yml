@@ -47,6 +47,6 @@ logging:
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
 custom:
-  likeablePerson :
+  likeablePerson:
     from:
-      max : "10"
+      max: "10"

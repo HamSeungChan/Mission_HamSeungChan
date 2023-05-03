@@ -29,27 +29,17 @@ public class LikeablePersonController {
         return "usr/likeablePerson/add";
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class AddForm {
-        private final String username;
-        private final int attractiveTypeCode;
-    }
-
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/add")
     public String add(@Valid AddForm addForm) {
-        RsData<LikeablePerson> canLikeRsData = likeablePersonService.canLike(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
 
-        if (canLikeRsData.isFail()) return rq.historyBack(canLikeRsData);
+        RsData<LikeablePerson> rsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
 
-        RsData<LikeablePerson> createRsData = likeablePersonService.like(rq.getMember(), addForm.getUsername(), addForm.getAttractiveTypeCode());
-
-        if (createRsData.isFail()) {
-            return rq.historyBack(createRsData);
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData);
         }
 
-        return rq.redirectWithMsg("/likeablePerson/list", createRsData);
+        return rq.redirectWithMsg("/likeablePerson/list", rsData);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -81,5 +71,12 @@ public class LikeablePersonController {
         if (deleteRsData.isFail()) return rq.historyBack(deleteRsData);
 
         return rq.redirectWithMsg("/likeablePerson/list", deleteRsData);
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class AddForm {
+        private final String username;
+        private final int attractiveTypeCode;
     }
 }

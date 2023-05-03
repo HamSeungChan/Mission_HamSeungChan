@@ -29,17 +29,6 @@ public class MemberController {
         return "usr/member/join";
     }
 
-    @AllArgsConstructor // @Setter 도 가능, 데이터를 저장할 방편을 마련하기 위해서
-    @Getter // joinForm.getUsername() 이런 코드 가능하게
-    public static class JoinForm {
-        @NotBlank // 비어있지 않아야 하고, 공백으로만 이루어 지지도 않아야 한다.
-        @Size(min = 4, max = 30) // 4자 이상, 30자 이하
-        private final String username;
-        @NotBlank
-        @Size(min = 4, max = 30)
-        private final String password;
-    }
-
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join(@Valid JoinForm joinForm) { // @Valid 가 없으면 @NotBlank 등이 작동하지 않음, 만약에 유효성 문제가 있다면 즉시 정지
@@ -64,5 +53,16 @@ public class MemberController {
     @GetMapping("/me") // 로그인 한 나의 정보 보여주는 페이지
     public String showMe() {
         return "usr/member/me";
+    }
+
+    @AllArgsConstructor // @Setter 도 가능, 데이터를 저장할 방편을 마련하기 위해서
+    @Getter // joinForm.getUsername() 이런 코드 가능하게
+    public static class JoinForm {
+        @NotBlank // 비어있지 않아야 하고, 공백으로만 이루어 지지도 않아야 한다.
+        @Size(min = 4, max = 30) // 4자 이상, 30자 이하
+        private final String username;
+        @NotBlank
+        @Size(min = 4, max = 30)
+        private final String password;
     }
 }

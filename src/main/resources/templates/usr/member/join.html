@@ -45,15 +45,15 @@
         }
     </script>
 
-    <form th:action method="POST" class="p-10 flex flex-col gap-4" onsubmit="JoinForm__submit(this); return false;">
+    <form class="p-10 flex flex-col gap-4" method="POST" onsubmit="JoinForm__submit(this); return false;" th:action>
         <div>
-            <input type="text" name="username" maxlength="30" placeholder="아이디" class="input input-bordered">
+            <input class="input input-bordered" maxlength="30" name="username" placeholder="아이디" type="text">
         </div>
         <div>
-            <input type="password" name="password" maxlength="30" placeholder="비밀번호" class="input input-bordered">
+            <input class="input input-bordered" maxlength="30" name="password" placeholder="비밀번호" type="password">
         </div>
         <div>
-            <input type="submit" value="회원가입" class="btn btn-primary">
+            <input class="btn btn-primary" type="submit" value="회원가입">
         </div>
     </form>
 </main>

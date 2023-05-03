@@ -10,7 +10,7 @@ public class AppConfig {
     private static long likeablePersonFromMax;
 
     @Value("${custom.likeablePerson.from.max}")
-    public void setLikeablePersonFromMax(String likeablePersonFromMax){
+    public void setLikeablePersonFromMax(String likeablePersonFromMax) {
         AppConfig.likeablePersonFromMax = Long.parseLong(likeablePersonFromMax);
     }
 }

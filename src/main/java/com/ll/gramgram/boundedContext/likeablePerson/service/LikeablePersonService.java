@@ -21,9 +21,7 @@ public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
 
-
-    @Transactional
-    public RsData canLike(Member member, String username, int attractiveTypeCode) {
+    private RsData canLike(Member member, String username, int attractiveTypeCode) {
 
         if (!member.hasConnectedInstaMember()) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
@@ -36,8 +34,11 @@ public class LikeablePersonService {
             return RsData.of("F-1", "본인을 호감상대로 등록할 수 없습니다.");
         }
 
-        Optional<LikeablePerson> duplicateLikeablePerson = checkDuplicate(likeablePeople, username);
+        Optional<LikeablePerson> duplicateLikeablePerson = findDuplicate(likeablePeople, username);
         if (duplicateLikeablePerson.isPresent()) {
+            if (duplicateLikeablePerson.get().getAttractiveTypeCode() != attractiveTypeCode) {
+                return RsData.of("S-2", "%s님에 대해서 호감변경이 가능합니다.".formatted(username));
+            }
             return RsData.of("F-3", ("이미 %s님에 대해서 호감표시를 했습니다").formatted(username));
         }
 
@@ -48,14 +49,23 @@ public class LikeablePersonService {
         return RsData.of("S-1", "%s님에 대해서 호감표시가 가능합니다.".formatted(username));
     }
 
-    private Optional<LikeablePerson> checkDuplicate(List<LikeablePerson> likeablePeople, String username) {
+    private Optional<LikeablePerson> findDuplicate(List<LikeablePerson> likeablePeople, String username) {
         return likeablePeople
                 .stream()
                 .filter(likeablePerson -> likeablePerson.getToInstaMember().getUsername().equals(username))
                 .findFirst();
     }
 
+    @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
+
+        RsData canLikeRsData = canLike(member, username, attractiveTypeCode);
+
+        if (canLikeRsData.isFail()) return canLikeRsData;
+
+        if (canLikeRsData.getResultCode().equals("S-2")) {
+            return modifyAttractiveTypeCode(member, username, attractiveTypeCode);
+        }
 
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
@@ -78,12 +88,6 @@ public class LikeablePersonService {
         toInstaMember.addToLikeablePerson(likeablePerson);
 
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
-    }
-
-    private void deleteForChange(InstaMember fromInstaMember, InstaMember toInstaMember, LikeablePerson likeablePerson) {
-        fromInstaMember.getFromLikeablePeople().remove(likeablePerson);
-        toInstaMember.getToLikeablePeople().remove(likeablePerson);
-        delete(likeablePerson);
     }
 
     private RsData checkAttractiveTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
@@ -123,5 +127,26 @@ public class LikeablePersonService {
             return RsData.of("F-2", "권한이 없습니다.");
 
         return RsData.of("S-1", "삭제가능합니다.");
+    }
+
+
+    private RsData<LikeablePerson> modifyAttractiveTypeCode(Member member, String username, int attractiveTypeCode) {
+        Optional<LikeablePerson> duplicateLikeablePerson = findDuplicate(member.getInstaMember().getFromLikeablePeople(), username);
+        if (duplicateLikeablePerson.isEmpty()) {
+            return RsData.of("F-7", "호감표시를 하지 않았습니다.");
+        }
+        LikeablePerson fromLikeablePerson = duplicateLikeablePerson.get();
+        String oldAttractiveTypeDisplayName = fromLikeablePerson.getAttractiveTypeDisplayName();
+        fromLikeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+
+        likeablePersonRepository.save(fromLikeablePerson);
+
+        String newAttractiveTypeDisplayName = fromLikeablePerson.getAttractiveTypeDisplayName();
+
+        return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName));
+    }
+
+    public Optional<LikeablePerson> findByFromInstaMember_usernameAndToInstaMember_username(String fromInstaMemberUsername, String toInstaMemberUsername) {
+        return likeablePersonRepository.findByFromInstaMember_usernameAndToInstaMember_username(fromInstaMemberUsername, toInstaMemberUsername);
     }
 }

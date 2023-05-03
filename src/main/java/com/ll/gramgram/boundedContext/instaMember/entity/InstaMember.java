@@ -43,10 +43,10 @@ public class InstaMember extends BaseEntity {
     }
 
     public void removeFromLikeablePerson(LikeablePerson likeablePerson) {
-        fromLikeablePeople.removeIf(e->e.equals(likeablePerson));
+        fromLikeablePeople.removeIf(e -> e.equals(likeablePerson));
     }
 
     public void removeToLikeablePerson(LikeablePerson likeablePerson) {
-        toLikeablePeople.removeIf(e->e.equals(likeablePerson));
+        toLikeablePeople.removeIf(e -> e.equals(likeablePerson));
     }
 }

@@ -30,6 +30,18 @@ public class InstaMemberController {
         return "usr/instaMember/connect";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/connect")
+    public String connect(@Valid ConnectForm connectForm) {
+        RsData<InstaMember> rsData = instaMemberService.connect(rq.getMember(), connectForm.getUsername(), connectForm.getGender());
+
+        if (rsData.isFail()) {
+            return rq.historyBack(rsData);
+        }
+
+        return rq.redirectWithMsg("/likeablePerson/add", "인스타그램 계정이 연결되었습니다.");
+    }
+
     @AllArgsConstructor
     @Getter
     public static class ConnectForm {
@@ -39,17 +51,5 @@ public class InstaMemberController {
         @NotBlank
         @Size(min = 1, max = 1)
         private final String gender;
-    }
-
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping("/connect")
-    public String connect(@Valid ConnectForm connectForm) {
-        RsData<InstaMember> rsData = instaMemberService.connect(rq.getMember(), connectForm.getUsername(), connectForm.getGender());
-
-        if ( rsData.isFail() ) {
-            return rq.historyBack(rsData);
-        }
-
-        return rq.redirectWithMsg("/likeablePerson/add", "인스타그램 계정이 연결되었습니다.");
     }
 }

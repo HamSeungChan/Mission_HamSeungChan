@@ -24,7 +24,7 @@ public class NotProd {
             Member memberUser2 = memberService.join("user2", "1234").getData();
             Member memberUser3 = memberService.join("user3", "1234").getData();
             Member memberUser4 = memberService.join("user4", "1234").getData();
-            Member memberUser5 = memberService.join("user5","1234").getData();
+            Member memberUser5 = memberService.join("user5", "1234").getData();
 
             //ddl-auto: create 이기 때문에 조금만 수정하여도 카카오 로그인한 정보가 사라짐을 방지
             Member memberUser5ByKakao = memberService.whenSocialLogin("KAKAO", "KAKAO__2735880781").getData();
