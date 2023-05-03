@@ -39,7 +39,7 @@ public class InstaMemberController {
             return rq.historyBack(rsData);
         }
 
-        return rq.redirectWithMsg("/likeablePerson/add", "인스타그램 계정이 연결되었습니다.");
+        return rq.redirectWithMsg("/likeablePerson/like", "인스타그램 계정이 연결되었습니다.");
     }
 
     @AllArgsConstructor

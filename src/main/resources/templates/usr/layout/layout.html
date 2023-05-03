@@ -35,7 +35,7 @@
     <a class="btn btn-link" href="/member/join" th:if="${@rq.logout}">회원가입</a>
     <a class="btn btn-link" href="/member/me" th:if="${@rq.login}">내 정보</a>
     <a class="btn btn-link" href="/instaMember/connect" th:if="${@rq.login}">본인의 인스타그램 정보 입력</a>
-    <a class="btn btn-link" href="/likeablePerson/add" th:if="${@rq.login}">호감표시</a>
+    <a class="btn btn-link" href="/likeablePerson/like" th:if="${@rq.login}">호감표시</a>
     <a class="btn btn-link" href="/likeablePerson/list" th:if="${@rq.login}">호감목록</a>
     <a class="btn btn-link" href="javascript:;" onclick="$(this).next().submit();" th:if="${@rq.login}">로그아웃</a>
     <form hidden method="POST" th:action="|/member/logout|" th:if="${@rq.login}"></form>

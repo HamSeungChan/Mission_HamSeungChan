@@ -39,13 +39,13 @@ public class LikeablePersonControllerTests {
     void t001() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/likeablePerson/add"))
+                .perform(get("/likeablePerson/like"))
                 .andDo(print());
 
         // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("showAdd"))
+                .andExpect(handler().methodName("showLike"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string(containsString("""
                         먼저 본인의 인스타그램 아이디를 입력해주세요.
@@ -59,13 +59,13 @@ public class LikeablePersonControllerTests {
     void t002() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(get("/likeablePerson/add"))
+                .perform(get("/likeablePerson/like"))
                 .andDo(print());
 
         // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("showAdd"))
+                .andExpect(handler().methodName("showLike"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string(containsString("""
                         <input type="text" name="username"
@@ -91,7 +91,7 @@ public class LikeablePersonControllerTests {
     void t003() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/likeablePerson/add")
+                .perform(post("/likeablePerson/like")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "insta_user3")
                         .param("attractiveTypeCode", "1")
@@ -101,7 +101,7 @@ public class LikeablePersonControllerTests {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("add"))
+                .andExpect(handler().methodName("like"))
                 .andExpect(status().is3xxRedirection());
         ;
     }
@@ -112,7 +112,7 @@ public class LikeablePersonControllerTests {
     void t004() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/likeablePerson/add")
+                .perform(post("/likeablePerson/like")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "abcd")
                         .param("attractiveTypeCode", "2")
@@ -122,7 +122,7 @@ public class LikeablePersonControllerTests {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("add"))
+                .andExpect(handler().methodName("like"))
                 .andExpect(status().is3xxRedirection());
         ;
     }
@@ -227,7 +227,7 @@ public class LikeablePersonControllerTests {
     void t009() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/likeablePerson/add")
+                .perform(post("/likeablePerson/like")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "insta_user4")
                         .param("attractiveTypeCode", "1")
@@ -237,39 +237,72 @@ public class LikeablePersonControllerTests {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("add"))
+                .andExpect(handler().methodName("like"))
                 .andExpect(status().is4xxClientError());
         ;
     }
 
     @Test
-    @DisplayName("호감표시 중복 X")
+    @DisplayName("본인이 본인에게 호감표시하면 안된다.")
     @WithUserDetails("user3")
     void t010() throws Exception {
-        ResultActions resultActions = mvc.perform(post("/likeablePerson/add")
-                        .with(csrf())
-                        .param("username", "insta_user4")
-                        .param("attractiveTypeCode", "1"))
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/like")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "insta_user3")
+                        .param("attractiveTypeCode", "1")
+                )
                 .andDo(print());
+
+        // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("add"))
+                .andExpect(handler().methodName("like"))
                 .andExpect(status().is4xxClientError());
+        ;
     }
 
     @Test
-    @DisplayName("10명이상은 호감표시 불가능")
-    @WithUserDetails("user5")
+    @DisplayName("특정인에 대해서 호감표시를 중복으로 시도하면 안된다.")
+    @WithUserDetails("user3")
     void t011() throws Exception {
-        ResultActions resultActions = mvc.perform(post("/likeablePerson/add")
-                        .with(csrf())
-                        .param("username", "insta_user1100")
-                        .param("attractiveTypeCode", "1"))
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/like")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "insta_user4")
+                        .param("attractiveTypeCode", "1")
+                )
                 .andDo(print());
+
+        // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("add"))
+                .andExpect(handler().methodName("like"))
                 .andExpect(status().is4xxClientError());
+        ;
+    }
+
+    @Test
+    @DisplayName("한 회원은 호감표시를 할 수 있는 최대 인원이 정해져 있다.")
+    @WithUserDetails("user5")
+    void t012() throws Exception {
+        // WHEN
+        ResultActions resultActions = mvc
+                .perform(post("/likeablePerson/like")
+                        .with(csrf()) // CSRF 키 생성
+                        .param("username", "insta_user111")
+                        .param("attractiveTypeCode", "1")
+                )
+                .andDo(print());
+
+        // THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("like"))
+                .andExpect(status().is4xxClientError());
+        ;
     }
 
     @Test
@@ -278,7 +311,7 @@ public class LikeablePersonControllerTests {
     void t013() throws Exception {
         // WHEN
         ResultActions resultActions = mvc
-                .perform(post("/likeablePerson/add")
+                .perform(post("/likeablePerson/like")
                         .with(csrf()) // CSRF 키 생성
                         .param("username", "insta_user4")
                         .param("attractiveTypeCode", "2")
@@ -288,7 +321,7 @@ public class LikeablePersonControllerTests {
         // THEN
         resultActions
                 .andExpect(handler().handlerType(LikeablePersonController.class))
-                .andExpect(handler().methodName("add"))
+                .andExpect(handler().methodName("like"))
                 .andExpect(status().is3xxRedirection());
         ;
 
