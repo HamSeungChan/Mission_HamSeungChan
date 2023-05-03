@@ -16,13 +16,13 @@ import java.time.LocalDateTime;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@SuperBuilder
 @MappedSuperclass
+@Getter
+@SuperBuilder
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @ToString
-@Getter
-public class BaseEntity {
+public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
