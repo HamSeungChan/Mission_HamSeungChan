@@ -1,7 +1,9 @@
 package com.ll.gramgram.boundedContext.notification.eventListener;
 
+import com.ll.gramgram.base.event.EventAfterLike;
 import com.ll.gramgram.base.event.EventAfterModifyAttractiveType;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
+import com.ll.gramgram.boundedContext.likeablePerson.entity.QLikeablePerson;
 import com.ll.gramgram.boundedContext.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +19,17 @@ public class NotificationEventListener {
 
     private final NotificationService notificationService;
     @EventListener
-    public void listen(EventAfterModifyAttractiveType event) {
+    public void listen(EventAfterLike event) {
 
         LikeablePerson likeablePerson = event.getLikeablePerson();
         notificationService.makeLike(likeablePerson);
     }
 
     @EventListener
-    public void listen(EventListener event) {
-        log.debug("EventAfterLike event : {}", event);
+    public void listen(EventAfterModifyAttractiveType event) {
+
+        LikeablePerson likeablePerson =event.getLikeablePerson();
+        notificationService.makeModifyAttractive(likeablePerson,event.getOldAttractiveTypeCode());
     }
 }
 
