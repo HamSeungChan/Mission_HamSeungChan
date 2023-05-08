@@ -411,5 +411,25 @@ public class LikeablePersonControllerTests {
         assertThat(likeablePersonService.findById(3L).isPresent()).isEqualTo(true);
     }
 
+    @Test
+    @DisplayName("호감변경은 쿨타임이 지나야 가능하다.")
+    @WithUserDetails("user3")
+    void t017() throws Exception{
+        //WHEN
+        ResultActions resultActions = mvc
+                .perform(
+                        (post("/usr/likeablePerson/modify/3"))
+                                .with(csrf())
+                                .param("attractiveTypeCode","3")
+                )
+                .andDo(print());
+        //THEN
+        resultActions
+                .andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("modify"))
+                .andExpect(status().is4xxClientError());
+
+        assertThat(likeablePersonService.findById(3L).get().getAttractiveTypeCode()).isEqualTo(2);
+    }
 
 }
