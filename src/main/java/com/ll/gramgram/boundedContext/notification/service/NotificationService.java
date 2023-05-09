@@ -23,14 +23,14 @@ public class NotificationService {
 
     @Transactional
     public RsData<Notification> makeLike(LikeablePerson likeablePerson) {
-        return make(likeablePerson,"LIKE",0,null);
+        return make(likeablePerson, "LIKE", 0, null);
     }
 
     public RsData<Notification> makeModifyAttractive(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
         return make(likeablePerson, "ModifyAttractiveType", oldAttractiveTypeCode, likeablePerson.getFromInstaMember().getGender());
     }
 
-    private RsData<Notification> make(LikeablePerson likeablePerson, String typeCode, int oldAttractiveTypeCode, String oldGender){
+    private RsData<Notification> make(LikeablePerson likeablePerson, String typeCode, int oldAttractiveTypeCode, String oldGender) {
         Notification notification = Notification
                 .builder()
                 .typeCode(typeCode)
@@ -47,16 +47,21 @@ public class NotificationService {
         return RsData.of("S-1", "알림 메세지가 생성되었습니다.", notification);
     }
 
-    public List<Notification> findByToInstaMember_username(String username){
+    public List<Notification> findByToInstaMember_username(String username) {
         return notificationRepository.findByToInstaMember_username(username);
     }
 
     @Transactional
-    public RsData markAsRead(List<Notification> notifications){
+    public RsData markAsRead(List<Notification> notifications) {
         notifications.stream()
                 .filter(notification -> !notification.isRead())
                 .forEach(Notification::markAsRead);
 
-        return RsData.of("S-1","읽음 처리 되었습니다.");
+        return RsData.of("S-1", "읽음 처리 되었습니다.");
+    }
+
+    public boolean countUnreadNotificationsByToInstaMember(InstaMember instaMember) {
+        return notificationRepository.countByToInstaMemberAndReadDateIsNull(instaMember) > 0;
+
     }
 }
