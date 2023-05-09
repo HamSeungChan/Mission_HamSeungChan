@@ -18,7 +18,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public List<Notification> findByToInstaMember(InstaMember toInstaMember) {
-        return notificationRepository.findByToInstaMember(toInstaMember);
+        return notificationRepository.findByToInstaMemberOrderByIdDesc(toInstaMember);
     }
 
     @Transactional
@@ -26,8 +26,9 @@ public class NotificationService {
         return make(likeablePerson, "LIKE", 0, null);
     }
 
+    @Transactional
     public RsData<Notification> makeModifyAttractive(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
-        return make(likeablePerson, "ModifyAttractiveType", oldAttractiveTypeCode, likeablePerson.getFromInstaMember().getGender());
+        return make(likeablePerson, "MODIFY_ATTRACTIVE_TYPE", oldAttractiveTypeCode, likeablePerson.getFromInstaMember().getGender());
     }
 
     private RsData<Notification> make(LikeablePerson likeablePerson, String typeCode, int oldAttractiveTypeCode, String oldGender) {
@@ -48,12 +49,13 @@ public class NotificationService {
     }
 
     public List<Notification> findByToInstaMember_username(String username) {
-        return notificationRepository.findByToInstaMember_username(username);
+        return notificationRepository.findByToInstaMember_usernameOrderByIdDesc(username);
     }
 
     @Transactional
     public RsData markAsRead(List<Notification> notifications) {
-        notifications.stream()
+        notifications
+                .stream()
                 .filter(notification -> !notification.isRead())
                 .forEach(Notification::markAsRead);
 
@@ -62,6 +64,5 @@ public class NotificationService {
 
     public boolean countUnreadNotificationsByToInstaMember(InstaMember instaMember) {
         return notificationRepository.countByToInstaMemberAndReadDateIsNull(instaMember) > 0;
-
     }
 }
