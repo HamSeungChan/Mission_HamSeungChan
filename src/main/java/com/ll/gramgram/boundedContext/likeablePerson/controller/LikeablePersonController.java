@@ -122,9 +122,14 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    @ResponseBody
     public String showToList(Model model) {
-        //TODO : showToList 구현해야 함
-        return "usr/likeablePerson/toList 구현해야 함";
+        InstaMember instaMember = rq.getMember().getInstaMember();
+
+        if(instaMember!=null){
+            List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+
+            model.addAttribute("likeablePeople",likeablePeople);
+        }
+        return "usr/likeablePerson/toList";
     }
 }
