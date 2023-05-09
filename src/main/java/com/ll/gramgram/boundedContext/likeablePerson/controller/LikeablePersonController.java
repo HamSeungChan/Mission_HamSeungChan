@@ -122,13 +122,21 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    public String showToList(Model model) {
+    public String showToList(Model model, String gender, String attractiveTypeCode, String sortCode) {
         InstaMember instaMember = rq.getMember().getInstaMember();
 
-        if(instaMember!=null){
+        if (instaMember != null) {
             List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
 
-            model.addAttribute("likeablePeople",likeablePeople);
+            List<LikeablePerson> findLikeablePeople;
+            if (gender != null) {
+                findLikeablePeople = likeablePeople.stream()
+                        .filter(likeablePerson -> likeablePerson.getFromInstaMember().getGender().equals(gender))
+                        .toList();
+                model.addAttribute("likeablePeople", findLikeablePeople);
+                return "usr/likeablePerson/toList";
+            }
+            model.addAttribute("likeablePeople", likeablePeople);
         }
         return "usr/likeablePerson/toList";
     }
